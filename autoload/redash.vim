@@ -28,6 +28,8 @@ function! redash#postQuery()
 endfunction
 
 function! redash#apiGetDataSourceId()
+  let l:res = webapi#http#get(g:redash_vim['api_endpoint']."/api/data_sources?api_key=".g:redash_vim['api_key'])
+  echo map(webapi#json#decode(l:res.content), 'v:val["id"].": ".v:val["name"]')
 endfunction
 
 function! redash#apiPostQueryResult(query, data_source_id)

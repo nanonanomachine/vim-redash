@@ -19,3 +19,4 @@ let g:loaded_vim_redash = 1
 " - g:redash_vim['api_endpoint']   Endpoint of API
 
 command! -nargs=0 RedashPost call redash#postQuery()
+command! -nargs=0 RedashDataSources call redash#apiGetDataSourceId()
