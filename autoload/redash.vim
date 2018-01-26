@@ -2,6 +2,11 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 function! redash#postQuery()
+  if !exists('s:data_source_id')
+    echo 'No DataSource set. You can call :RedashDatasources and :RedashSetSource command'
+    return
+  endif
+
   let l:query = join(getline(0, '$'), '\n')
   let l:data_source_id = 4
 
@@ -31,6 +36,10 @@ function! redash#apiGetDataSourceId()
   let l:res = webapi#http#get(g:redash_vim['api_endpoint']."/api/data_sources?api_key=".g:redash_vim['api_key'])
   echo map(webapi#json#decode(l:res.content), 'v:val["id"].": ".v:val["name"]')
 endfunction
+
+function! redash#setDataSource(data_source_id)
+  let s:data_source_id = a:data_source_id
+endfunc
 
 function! redash#apiPostQueryResult(query, data_source_id)
   let l:execute_query_body = { "query": a:query, "data_source_id": a:data_source_id }
