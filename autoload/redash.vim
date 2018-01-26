@@ -35,6 +35,7 @@ endfunction
 function! redash#apiGetDataSourceId()
   let l:res = webapi#http#get(g:redash_vim['api_endpoint']."/api/data_sources?api_key=".g:redash_vim['api_key'])
   echo map(webapi#json#decode(l:res.content), 'v:val["id"].": ".v:val["name"]')
+  echo "Current DataSource Id: ".(exists("s:data_source_id") ? s:data_source_id : "Not set")
 endfunction
 
 function! redash#setDataSource(data_source_id)
