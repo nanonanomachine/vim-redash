@@ -7,7 +7,7 @@ function! redash#postQuery()
     return
   endif
 
-  let l:query = join(getline(0, '$'), '\n')
+  let l:query = join(getline(1, '$'), "\n")
   let l:data_source_id = 4
 
   let l:query_result = redash#apiPostQueryResult(l:query, l:data_source_id)
