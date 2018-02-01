@@ -8,9 +8,8 @@ function! redash#postQuery()
   endif
 
   let l:query = join(getline(1, '$'), "\n")
-  let l:data_source_id = 4
 
-  let l:query_result = redash#apiPostQueryResult(l:query, l:data_source_id)
+  let l:query_result = redash#apiPostQueryResult(l:query, s:data_source_id)
   if l:query_result[0] == v:null
     echo l:query_result[1]
     return
@@ -22,7 +21,7 @@ function! redash#postQuery()
     return
   endif
 
-  let l:query = redash#apiPostQuery(l:query, l:data_source_id, l:job[0])
+  let l:query = redash#apiPostQuery(l:query, s:data_source_id, l:job[0])
   if l:query[0] == v:null
     echo l:query[1]
     return
