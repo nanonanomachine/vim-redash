@@ -32,15 +32,31 @@ function! redash#postQuery()
   call netrw#BrowseX(g:redash_vim['api_endpoint']."/queries/".query[0]."/source", netrw#CheckIfRemote())
 endfunction
 
-function! redash#apiGetDataSourceId()
-  let l:res = webapi#http#get(g:redash_vim['api_endpoint']."/api/data_sources?api_key=".g:redash_vim['api_key'])
-  echo map(webapi#json#decode(l:res.content), 'v:val["id"].": ".v:val["name"]')
+function! redash#getDataSources()
+  let l:data_sources = redash#apiGetDataSources()
+  if l:data_sources[1] != v:null
+    echo l:data_sources[1]
+    return
+  endif
+
+  echo map(l:data_sources[0], 'v:val["id"].": ".v:val["name"]')
+
   echo "Current DataSource Id: ".(exists("s:data_source_id") ? s:data_source_id : "Not set")
 endfunction
 
 function! redash#setDataSource(data_source_id)
   let s:data_source_id = a:data_source_id
 endfunc
+
+function! redash#apiGetDataSources()
+  let l:res = webapi#http#get(g:redash_vim['api_endpoint']."/api/data_sources?api_key=".g:redash_vim['api_key'])
+
+  if l:res.status !~ "^2.*"
+    return [[], 'Failed to get data sources']
+  endif
+
+  return [webapi#json#decode(l:res.content), v:null]
+endfunction
 
 function! redash#apiPostQueryResult(query, data_source_id)
   let l:execute_query_body = { "query": a:query, "data_source_id": a:data_source_id }
