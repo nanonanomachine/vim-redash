@@ -47,10 +47,19 @@ function! redash#setDataSource(data_source_id)
   let s:data_source_id = a:data_source_id
 endfunction
 
-function! redash#getSchema(data_source_id)
-  echo redash#apiGetSchema(a:data_source_id)
+function! redash#showTables(data_source_id)
+  echo map(redash#apiGetSchema(a:data_source_id), 'v:val["name"]')
 endfunction
 
+function! redash#Describe(data_source_id, table_name)
+  echo a:table_name
+  echo '--------------'
+  echo redash#apiGetSchema(a:data_source_id)[a:table_name]["columns"]
+endfunction
+
+""""""""""""""""""""""""""""""""""""""""""
+" Private API
+""""""""""""""""""""""""""""""""""""""""""
 
 function! redash#apiGetDataSources()
   let l:res = webapi#http#get(g:redash_vim['api_endpoint']."/api/data_sources?api_key=".g:redash_vim['api_key'])
