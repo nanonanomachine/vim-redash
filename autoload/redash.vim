@@ -45,7 +45,12 @@ endfunction
 
 function! redash#setDataSource(data_source_id)
   let s:data_source_id = a:data_source_id
-endfunc
+endfunction
+
+function! redash#getSchema(data_source_id)
+  echo redash#apiGetSchema(a:data_source_id)
+endfunction
+
 
 function! redash#apiGetDataSources()
   let l:res = webapi#http#get(g:redash_vim['api_endpoint']."/api/data_sources?api_key=".g:redash_vim['api_key'])
@@ -102,6 +107,11 @@ function! redash#apiPostQuery(query, data_source_id, query_result_id)
   endif
 
   return [webapi#json#decode(l:query_res.content)["id"], v:null]
+endfunction
+
+function! redash#apiGetSchema(data_source_id)
+  let l:schema_res = webapi#http#get(g:redash_vim['api_endpoint']."/api/data_sources/".a:data_source_id."/schema?api_key=".g:redash_vim['api_key'])
+  return webapi#json#decode(l:schema_res.content)
 endfunction
 
 let &cpo = s:save_cpo
