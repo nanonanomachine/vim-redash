@@ -1,6 +1,8 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
+let s:data_source_file = $HOME.'/.redash-vim-data-source'
+
 function! redash#postQuery()
   if !exists('s:data_source_id')
     echo 'No DataSource set. You can call :RedashDatasources and :RedashSetSource command'
@@ -46,6 +48,7 @@ endfunction
 
 function! redash#setDataSource(data_source_id)
   let s:data_source_id = a:data_source_id
+  call writefile([s:data_source_id], s:data_source_file)
 endfunction
 
 function! redash#showTables(data_source_id)
@@ -68,6 +71,12 @@ function! redash#Describe(data_source_id, table_name)
   echo a:table_name
   echo '--------------'
   echo l:schema['result'][a:table_name]["columns"]
+endfunction
+
+function! redash#readDataSource()
+  if filereadable(s:data_source_file)
+    let s:data_source_id = join(readfile(s:data_source_file), '')
+  endif
 endfunction
 
 let &cpo = s:save_cpo

@@ -9,6 +9,10 @@ if s:config_file_exists == 1
   source $HOME/.redash.vim
 endif
 
+if !exists('s:data_source_id')
+  call redash#readDataSource()
+endif
+
 if exists('g:loaded_vim_redash')
   finish
 endif
