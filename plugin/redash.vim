@@ -25,5 +25,5 @@ let g:loaded_vim_redash = 1
 command! -nargs=0 RedashPost call redash#postQuery()
 command! -nargs=0 RedashDataSources call redash#getDataSources()
 command! -nargs=1 RedashSetSource call redash#setDataSource(<f-args>)
-command! -nargs=1 RedashShowTables call redash#showTables(<f-args>)
-command! -nargs=+ RedashDescribe call redash#Describe(<f-args>)
+command! -nargs=0 RedashShowTables call redash#showTables(<f-args>)
+command! -nargs=1 RedashDescribe call redash#Describe(<f-args>)

@@ -51,8 +51,13 @@ function! redash#setDataSource(data_source_id)
   call writefile([s:data_source_id], s:data_source_file)
 endfunction
 
-function! redash#showTables(data_source_id)
-  let l:schema = redash#webapi#GetSchema(a:data_source_id)
+function! redash#showTables()
+  if !exists('s:data_source_id')
+    echo 'No DataSource set. You can call :RedashDatasources and :RedashSetSource command'
+    return
+  endif
+
+  let l:schema = redash#webapi#GetSchema(s:data_source_id)
   if l:schema['error'] != v:null
     echo l:schema['error']
     return
@@ -61,8 +66,13 @@ function! redash#showTables(data_source_id)
   echo map(l:schema['result'], 'v:val["name"]')
 endfunction
 
-function! redash#Describe(data_source_id, table_name)
-  let l:schema = redash#webapi#GetSchema(a:data_source_id)
+function! redash#Describe(table_name)
+  if !exists('s:data_source_id')
+    echo 'No DataSource set. You can call :RedashDatasources and :RedashSetSource command'
+    return
+  endif
+
+  let l:schema = redash#webapi#GetSchema(s:data_source_id)
   if l:schema['error'] != v:null
     echo l:schema['error']
     return
