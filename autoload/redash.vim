@@ -15,9 +15,16 @@ function! redash#Describe(table_name)
     return
   endif
 
+  let l:table = filter(l:schema['result'], 'v:val["name"] == "'.a:table_name.'"')
+
+  if len(l:table) == 0
+    echo a:table_name.' does not exist'
+    return
+  endif
+
   echo a:table_name
   echo '--------------'
-  echo l:schema['result'][a:table_name]["columns"]
+  echo l:table[0]["columns"]
 endfunction
 
 function! redash#postQuery()
