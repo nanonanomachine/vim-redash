@@ -11,19 +11,6 @@ function! redash#webapi#GetDataSources()
   return { "result": webapi#json#decode(l:res.content), "error": v:null }
 endfunction
 
-function! redash#webapi#PostQueryResult(query, data_source_id)
-  let l:execute_query_body = { "query": a:query, "data_source_id": a:data_source_id }
-  let l:execute_query_body.max_age = 0
-  let query_result_res = webapi#http#post(
-    \ g:redash_vim['api_endpoint']."/api/query_results?api_key=".g:redash_vim['api_key'],
-    \ json_encode(l:execute_query_body)
-    \ )
-  if query_result_res.status !~ "^2.*"
-    return { "result": v:null, "error": 'Failed to create query' }
-  endif
-  return { "result": webapi#json#decode(query_result_res.content)["job"]["id"], "error": v:null }
-endfunction
-
 function! redash#webapi#GetJob(job_id)
   while 1
     let l:job_res = webapi#http#get(g:redash_vim['api_endpoint']."/api/jobs/".a:job_id."?api_key=".g:redash_vim['api_key'])
@@ -38,6 +25,14 @@ function! redash#webapi#GetJob(job_id)
 
     sleep
   endwhile
+endfunction
+
+function! redash#webapi#GetSchema(data_source_id)
+  let l:schema_res = webapi#http#get(g:redash_vim['api_endpoint']."/api/data_sources/".a:data_source_id."/schema?api_key=".g:redash_vim['api_key'])
+  if l:schema_res.status !~ "^2.*"
+    return { "result": v:null, "error": 'Failed to get schema' }
+  endif
+  return { "result": webapi#json#decode(l:schema_res.content), "error": v:null }
 endfunction
 
 function! redash#webapi#PostQuery(query, data_source_id, query_result_id)
@@ -57,12 +52,17 @@ function! redash#webapi#PostQuery(query, data_source_id, query_result_id)
   return { "result": webapi#json#decode(l:query_res.content)["id"], "error": v:null }
 endfunction
 
-function! redash#webapi#GetSchema(data_source_id)
-  let l:schema_res = webapi#http#get(g:redash_vim['api_endpoint']."/api/data_sources/".a:data_source_id."/schema?api_key=".g:redash_vim['api_key'])
-  if l:schema_res.status !~ "^2.*"
-    return { "result": v:null, "error": 'Failed to get schema' }
+function! redash#webapi#PostQueryResult(query, data_source_id)
+  let l:execute_query_body = { "query": a:query, "data_source_id": a:data_source_id }
+  let l:execute_query_body.max_age = 0
+  let query_result_res = webapi#http#post(
+    \ g:redash_vim['api_endpoint']."/api/query_results?api_key=".g:redash_vim['api_key'],
+    \ json_encode(l:execute_query_body)
+    \ )
+  if query_result_res.status !~ "^2.*"
+    return { "result": v:null, "error": 'Failed to create query' }
   endif
-  return { "result": webapi#json#decode(l:schema_res.content), "error": v:null }
+  return { "result": webapi#json#decode(query_result_res.content)["job"]["id"], "error": v:null }
 endfunction
 
 let &cpo = s:save_cpo
