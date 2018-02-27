@@ -11,19 +11,12 @@ function! redash#executeQuery()
 
   let l:query = join(getline(1, '$'), "\n")
 
-  let l:query_result = redash#webapi#postQueryResult(l:query, l:data_source_id)
-  if l:query_result['error'] != v:null
-    echo l:query_result['error']
+  let l:query_result_id = s:get_query_result_id(l:data_source_id, l:query)
+  if l:query_result_id == 0
     return
   endif
 
-  let l:job = redash#webapi#getJob(l:query_result['result'])
-  if l:job['error'] != v:null
-    echo l:job['error']
-    return
-  endif
-
-  let l:query_result = redash#webapi#getQueryResult(l:job['result']['query_result_id'])
+  let l:query_result = redash#webapi#getQueryResult(l:query_result_id)
   if l:query_result['error'] != v:null
     echo l:query_result['error']
     return
@@ -63,19 +56,12 @@ function! redash#postQuery()
 
   let l:query = join(getline(1, '$'), "\n")
 
-  let l:query_result = redash#webapi#postQueryResult(l:query, l:data_source_id)
-  if l:query_result['error'] != v:null
-    echo l:query_result['error']
+  let l:query_result_id = s:get_query_result_id(l:data_source_id, l:query)
+  if l:query_result_id == 0
     return
   endif
 
-  let l:job = redash#webapi#getJob(l:query_result['result'])
-  if l:job['error'] != v:null
-    echo l:job['error']
-    return
-  endif
-
-  let l:query = redash#webapi#postQuery(l:query, l:data_source_id, l:job['result']['query_result_id'])
+  let l:query = redash#webapi#postQuery(l:query, l:data_source_id, l:query_result_id)
   if l:query['error'] != v:null
     echo l:query['error']
     return
@@ -138,6 +124,21 @@ function! s:get_data_source_id()
     echo 'No DataSource set. You can call :RedashShowDataSources and :RedashSetDataSource command'
     return 0
   endif
+endfunction
+
+function! s:get_query_result_id(data_source_id, query)
+  let l:query_result = redash#webapi#postQueryResult(a:query, a:data_source_id)
+  if l:query_result['error'] != v:null
+    echo l:query_result['error']
+    return 0
+  endif
+
+  let l:job = redash#webapi#getJob(l:query_result['result'])
+  if l:job['error'] != v:null
+    echo l:job['error']
+    return 0
+  endif
+  return l:job['result']['query_result_id']
 endfunction
 
 let &cpo = s:save_cpo
