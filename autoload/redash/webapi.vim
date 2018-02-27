@@ -24,15 +24,14 @@ function! redash#webapi#PostQueryResult(query, data_source_id)
   return { "result": webapi#json#decode(query_result_res.content)["job"]["id"], "error": v:null }
 endfunction
 
-function! redash#webapi#GetJobId(job_id)
+function! redash#webapi#GetJob(job_id)
   while 1
     let l:job_res = webapi#http#get(g:redash_vim['api_endpoint']."/api/jobs/".a:job_id."?api_key=".g:redash_vim['api_key'])
     let l:job_res_content = webapi#json#decode(l:job_res.content)
     let l:status =  l:job_res_content["job"]["status"]
-    let l:query_result_id  =  l:job_res_content["job"]["query_result_id"]
 
     if l:status == 3
-      return { "result": l:query_result_id, "error": v:null }
+      return { "result": l:job_res_content["job"], "error": v:null }
     elseif status != 2
       return { "result": v:null, "error": l:job_res_content["job"]["error"] }
     endif

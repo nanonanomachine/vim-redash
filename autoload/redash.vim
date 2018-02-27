@@ -41,13 +41,13 @@ function! redash#postQuery()
     return
   endif
 
-  let l:job = redash#webapi#GetJobId(l:query_result['result'])
+  let l:job = redash#webapi#GetJob(l:query_result['result'])
   if l:job['error'] != v:null
     echo l:job['error']
     return
   endif
 
-  let l:query = redash#webapi#PostQuery(l:query, l:data_source_id, l:job['result'])
+  let l:query = redash#webapi#PostQuery(l:query, l:data_source_id, l:job['result']['query_result_id'])
   if l:query['error'] != v:null
     echo l:query['error']
     return
