@@ -27,6 +27,14 @@ function! redash#webapi#GetJob(job_id)
   endwhile
 endfunction
 
+function! redash#webapi#getQueryResult(query_result_id)
+  let l:query_result_res = webapi#http#get(g:redash_vim['api_endpoint'].'/api/query_results/'.a:query_result_id.'?api_key='.g:redash_vim['api_key'])
+  if query_result_res.status !~ "^2.*"
+    return { "result": v:null, "error": 'Failed to get query result' }
+  endif
+  return { "result": webapi#json#decode(query_result_res.content)["query_result"], "error": v:null }
+endfunction
+
 function! redash#webapi#GetSchema(data_source_id)
   let l:schema_res = webapi#http#get(g:redash_vim['api_endpoint']."/api/data_sources/".a:data_source_id."/schema?api_key=".g:redash_vim['api_key'])
   if l:schema_res.status !~ "^2.*"

@@ -3,6 +3,34 @@ set cpo&vim
 
 let s:data_source_file = $HOME.'/.redash-vim-data-source'
 
+function! redash#executeQuery()
+  let l:data_source_id = s:getDataSourceId()
+  if l:data_source_id == 0
+    return
+  endif
+
+  let l:query = join(getline(1, '$'), "\n")
+
+  let l:query_result = redash#webapi#PostQueryResult(l:query, l:data_source_id)
+  if l:query_result['error'] != v:null
+    echo l:query_result['error']
+    return
+  endif
+
+  let l:job = redash#webapi#GetJob(l:query_result['result'])
+  if l:job['error'] != v:null
+    echo l:job['error']
+    return
+  endif
+
+  let l:query_result = redash#webapi#getQueryResult(l:job['result']['query_result_id'])
+  if l:query_result['error'] != v:null
+    echo l:query_result['error']
+    return
+  endif
+  echo l:query_result['result']['data']['rows']
+endfunction
+
 function! redash#Describe(table_name)
   let l:data_source_id = s:getDataSourceId()
   if l:data_source_id == 0

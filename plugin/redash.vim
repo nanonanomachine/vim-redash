@@ -19,6 +19,7 @@ let g:loaded_vim_redash = 1
 " - g:redash_vim['api_endpoint']   Endpoint of API
 
 command! -nargs=1 RedashDescribe call redash#Describe(<f-args>)
+command! -nargs=0 RedashExecute call redash#executeQuery()
 command! -nargs=0 RedashPost call redash#postQuery()
 command! -nargs=1 RedashSetDataSource call redash#setDataSource(<f-args>)
 command! -nargs=0 RedashShowDataSources call redash#showDataSources()
