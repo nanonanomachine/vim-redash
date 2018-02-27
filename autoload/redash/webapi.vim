@@ -29,7 +29,7 @@ endfunction
 
 function! redash#webapi#getQueryResult(query_result_id)
   let l:query_result_res = webapi#http#get(g:redash_vim['api_endpoint'].'/api/query_results/'.a:query_result_id.'?api_key='.g:redash_vim['api_key'])
-  if query_result_res.status !~ '^2.*'
+  if l:query_result_res.status !~ '^2.*'
     return { 'result': v:null, 'error': 'Failed to get query result' }
   endif
   return { 'result': webapi#json#decode(query_result_res.content)['query_result'], 'error': v:null }
