@@ -11,13 +11,13 @@ function! redash#executeQuery()
 
   let l:query = join(getline(1, '$'), "\n")
 
-  let l:query_result = redash#webapi#PostQueryResult(l:query, l:data_source_id)
+  let l:query_result = redash#webapi#postQueryResult(l:query, l:data_source_id)
   if l:query_result['error'] != v:null
     echo l:query_result['error']
     return
   endif
 
-  let l:job = redash#webapi#GetJob(l:query_result['result'])
+  let l:job = redash#webapi#getJob(l:query_result['result'])
   if l:job['error'] != v:null
     echo l:job['error']
     return
@@ -31,13 +31,13 @@ function! redash#executeQuery()
   echo l:query_result['result']['data']['rows']
 endfunction
 
-function! redash#Describe(table_name)
+function! redash#describe(table_name)
   let l:data_source_id = s:getDataSourceId()
   if l:data_source_id == 0
     return
   endif
 
-  let l:schema = redash#webapi#GetSchema(l:data_source_id)
+  let l:schema = redash#webapi#getSchema(l:data_source_id)
   if l:schema['error'] != v:null
     echo l:schema['error']
     return
@@ -52,7 +52,7 @@ function! redash#Describe(table_name)
 
   echo a:table_name
   echo '--------------'
-  echo l:table[0]["columns"]
+  echo l:table[0]['columns']
 endfunction
 
 function! redash#postQuery()
@@ -63,26 +63,26 @@ function! redash#postQuery()
 
   let l:query = join(getline(1, '$'), "\n")
 
-  let l:query_result = redash#webapi#PostQueryResult(l:query, l:data_source_id)
+  let l:query_result = redash#webapi#postQueryResult(l:query, l:data_source_id)
   if l:query_result['error'] != v:null
     echo l:query_result['error']
     return
   endif
 
-  let l:job = redash#webapi#GetJob(l:query_result['result'])
+  let l:job = redash#webapi#getJob(l:query_result['result'])
   if l:job['error'] != v:null
     echo l:job['error']
     return
   endif
 
-  let l:query = redash#webapi#PostQuery(l:query, l:data_source_id, l:job['result']['query_result_id'])
+  let l:query = redash#webapi#postQuery(l:query, l:data_source_id, l:job['result']['query_result_id'])
   if l:query['error'] != v:null
     echo l:query['error']
     return
   endif
 
   " Open query result in Browswer
-  call netrw#BrowseX(g:redash_vim['api_endpoint']."/queries/".l:query['result']."/source", netrw#CheckIfRemote())
+  call netrw#BrowseX(g:redash_vim['api_endpoint'].'/queries/'.l:query['result'].'/source', netrw#CheckIfRemote())
 endfunction
 
 function! redash#setDataSource(data_source_id)
@@ -91,7 +91,7 @@ function! redash#setDataSource(data_source_id)
 endfunction
 
 function! redash#showDataSources()
-  let l:data_sources = redash#webapi#GetDataSources()
+  let l:data_sources = redash#webapi#getDataSources()
   if l:data_sources['error'] != v:null
     echo l:data_sources['error']
     return
@@ -104,7 +104,7 @@ function! redash#showDataSources()
     return
   endif
 
-  echo "Current DataSource Id: ".l:data_source_id
+  echo 'Current DataSource Id: '.l:data_source_id
 endfunction
 
 function! redash#showTables()
@@ -113,7 +113,7 @@ function! redash#showTables()
     return
   endif
 
-  let l:schema = redash#webapi#GetSchema(s:data_source_id)
+  let l:schema = redash#webapi#getSchema(s:data_source_id)
   if l:schema['error'] != v:null
     echo l:schema['error']
     return
