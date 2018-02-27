@@ -4,7 +4,7 @@ set cpo&vim
 let s:data_source_file = $HOME.'/.redash-vim-data-source'
 
 function! redash#executeQuery()
-  let l:data_source_id = s:getDataSourceId()
+  let l:data_source_id = s:get_data_source_id()
   if l:data_source_id == 0
     return
   endif
@@ -32,7 +32,7 @@ function! redash#executeQuery()
 endfunction
 
 function! redash#describe(table_name)
-  let l:data_source_id = s:getDataSourceId()
+  let l:data_source_id = s:get_data_source_id()
   if l:data_source_id == 0
     return
   endif
@@ -56,7 +56,7 @@ function! redash#describe(table_name)
 endfunction
 
 function! redash#postQuery()
-  let l:data_source_id = s:getDataSourceId()
+  let l:data_source_id = s:get_data_source_id()
   if l:data_source_id == 0
     return
   endif
@@ -99,7 +99,7 @@ function! redash#showDataSources()
 
   echo map(l:data_sources['result'], 'v:val["id"].": ".v:val["name"]')
 
-  let l:data_source_id = s:getDataSourceId()
+  let l:data_source_id = s:get_data_source_id()
   if l:data_source_id == 0
     return
   endif
@@ -108,7 +108,7 @@ function! redash#showDataSources()
 endfunction
 
 function! redash#showTables()
-  let l:data_source_id = s:getDataSourceId()
+  let l:data_source_id = s:get_data_source_id()
   if l:data_source_id == 0
     return
   endif
@@ -122,7 +122,7 @@ function! redash#showTables()
   echo map(l:schema['result'], 'v:val["name"]')
 endfunction
 
-function! s:getDataSourceId()
+function! s:get_data_source_id()
   if exists('s:data_source_id')
     if s:data_source_id == 0
       echo 'DataSource is invalid. You can call :RedashShowDataSources and :RedashSetDataSource command'
