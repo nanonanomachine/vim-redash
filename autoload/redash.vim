@@ -2,6 +2,9 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 let s:data_source_file = $HOME.'/.redash-vim-data-source'
+let s:V = vital#redash#new()
+let s:TT = s:V.import('Text.Table')
+let s:VT = s:V.import('Vim.ViewTracer')
 
 function! redash#executeQuery()
   let l:data_source_id = s:get_data_source_id()
@@ -18,10 +21,23 @@ function! redash#executeQuery()
 
   let l:query_result = redash#webapi#getQueryResult(l:query_result_id)
   if l:query_result['error'] != v:null
-    echo l:query_result['error']
+    echo l::uery_result['error']
     return
   endif
-  echo l:query_result['result']['data']['rows']
+
+  let l:prev_window = s:VT.trace_window()
+
+  lefta vnew
+  let l:columns = keys(l:query_result['result']['data']['rows'][0])
+  let l:table = s:TT.new({
+  \ 'columns': map(l:columns, '{}'),
+  \ 'header': l:columns
+  \})
+  call l:table.rows(map(l:query_result['result']['data']['rows'], 'values(v:val)'))
+  call setline('$', l:table.stringify())
+
+  call s:VT.jump(prev_window)
+  redraw
 endfunction
 
 function! redash#describe(table_name)
