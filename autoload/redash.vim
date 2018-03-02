@@ -28,6 +28,7 @@ function! redash#executeQuery()
   let l:prev_window = s:VT.trace_window()
 
   lefta new
+  edit [Redash output]
   let l:columns = keys(l:query_result['result']['data']['rows'][0])
   let l:table = s:TT.new({
   \ 'columns': map(copy(l:columns), '{}'),
