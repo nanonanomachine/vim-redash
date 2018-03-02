@@ -551,7 +551,13 @@ function! s:_make_row_string(context, row, left_border, center_border, right_bor
 
   let out = []
   let padding = repeat(' ', a:context.hpadding)
-  for htexts in call(s:L.zip, map(copy(row), '!empty(v:val.text) ? v:val.text : [""]'))
+
+  " Same logic as s:L.zip.
+  " Fix for Too many Arguments error since function accepts only 20 arguments.
+  let zip_arguments = map(copy(row), '!empty(v:val.text) ? v:val.text : [""]')
+  let zipped_row = map(range(min(map(copy(zip_arguments), 'len(v:val)'))), "map(copy(zip_arguments), 'v:val['.v:val.']')")
+
+  for htexts in zipped_row
     let cellstrs = []
     for colidx in range(a:context.ncolumns)
       " horizontal align
