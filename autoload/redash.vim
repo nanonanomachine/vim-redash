@@ -33,8 +33,9 @@ function! redash#executeQuery()
   \ 'columns': map(copy(l:columns), '{}'),
   \ 'header': l:columns
   \})
-  call l:table.rows(map(l:query_result['result']['data']['rows'], 'values(v:val)'))
+  call l:table.rows(map(copy(l:query_result['result']['data']['rows']), 'values(v:val)'))
   call setline('$', l:table.stringify())
+  call append('$', 'runtime: '.string(l:query_result['result']['runtime']).' sec')
 
   call s:VT.jump(prev_window)
   redraw
