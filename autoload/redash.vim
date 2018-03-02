@@ -30,7 +30,7 @@ function! redash#executeQuery()
   lefta new
   let l:columns = keys(l:query_result['result']['data']['rows'][0])
   let l:table = s:TT.new({
-  \ 'columns': map(l:columns, '{}'),
+  \ 'columns': map(copy(l:columns), '{}'),
   \ 'header': l:columns
   \})
   call l:table.rows(map(l:query_result['result']['data']['rows'], 'values(v:val)'))
