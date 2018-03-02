@@ -27,7 +27,7 @@ function! redash#executeQuery()
 
   let l:prev_window = s:VT.trace_window()
 
-  lefta vnew
+  lefta new
   let l:columns = keys(l:query_result['result']['data']['rows'][0])
   let l:table = s:TT.new({
   \ 'columns': map(l:columns, '{}'),
