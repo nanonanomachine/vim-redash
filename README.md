@@ -82,6 +82,10 @@ No DataSource set. You can call :RedashShowDataSources and :RedashSetDataSource 
 
 * `:RedashShowTables` - Show table lists of current DataSource
 
+# Demo
+
+![example.gif](https://i.imgur.com/paNEufI.gif)
+
 # Dependencies
 
 * [mattn/webapi-vim](https://github.com/mattn/webapi-vim)
