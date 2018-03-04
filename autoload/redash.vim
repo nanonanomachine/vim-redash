@@ -28,14 +28,15 @@ function! redash#executeQuery()
   let l:prev_window = s:VT.trace_window()
 
   let l:b_name = '[Redash output]'
-  if !bufexists(l:b_name)
+  if bufwinnr(l:b_name) == -1
     lefta new
     edit `=l:b_name`
     setlocal bufhidden=hide buftype=nofile noswapfile nobuflisted
   else
     execute bufwinnr(l:b_name) 'wincmd w'
-    execute '0,$' 'delete _'
   endif
+
+  execute '0,$' 'delete _'
 
   let l:columns = keys(l:query_result['result']['data']['rows'][0])
   let l:table = s:TT.new({
