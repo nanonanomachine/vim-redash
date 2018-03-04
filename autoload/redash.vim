@@ -37,7 +37,7 @@ function! redash#executeQuery()
     execute bufwinnr(l:escaped_b_name) 'wincmd w'
   endif
 
-  execute '0,$' 'delete _'
+  silent 1,$d _
 
   let l:columns = keys(l:query_result['result']['data']['rows'][0])
   let l:table = s:TT.new({
