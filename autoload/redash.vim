@@ -28,12 +28,13 @@ function! redash#executeQuery()
   let l:prev_window = s:VT.trace_window()
 
   let l:b_name = '[Redash output]'
-  if bufwinnr(l:b_name) == -1
+  let l:escaped_b_name = s:escape_file_pattern('[Redash output]')
+  if bufwinnr(l:escaped_b_name) == -1
     lefta new
     edit `=l:b_name`
     setlocal bufhidden=hide buftype=nofile noswapfile nobuflisted
   else
-    execute bufwinnr(l:b_name) 'wincmd w'
+    execute bufwinnr(l:escaped_b_name) 'wincmd w'
   endif
 
   execute '0,$' 'delete _'
@@ -151,6 +152,10 @@ function! s:get_data_source_id()
     echo 'No DataSource set. You can call :RedashShowDataSources and :RedashSetDataSource command'
     return 0
   endif
+endfunction
+
+function! s:escape_file_pattern(pat) abort
+  return join(map(split(a:pat, '\zs'), '"[" . v:val . "]"'), '')
 endfunction
 
 function! s:get_query_result_id(data_source_id, query)
