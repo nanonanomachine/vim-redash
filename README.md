@@ -27,7 +27,7 @@ This plugin tested with Redash 2.0.0+b2990.
 
         $ touch ~/.redash.vim
 
-2. Edit `.redsah.vim` the following: 
+2. Edit `.redash.vim` the following: 
 
         let g:redash_vim = {
         \ 'api_key':      'your_api_key',
@@ -56,7 +56,7 @@ No DataSource set. You can call :RedashShowDataSources and :RedashSetDataSource 
 
 :RedashShowTables
 =>
-['some_table`, 'another_table']
+['some_table', 'another_table']
 
 
 :RedashDescribe some_table
